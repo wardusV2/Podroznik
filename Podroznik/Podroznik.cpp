@@ -80,6 +80,7 @@ public:
     void run();
    static void handleKeyboard(unsigned char key, int x, int y);
    static void handleMouse(int button, int state, int x, int y);
+   static void MouseMotion(int x, int y);
    static void handleMouseMotion(int x, int y);
    static void update();
     static void render();
@@ -144,7 +145,28 @@ void Engine::handleKeyboard(unsigned char key, int x, int y) {
         // Dodaj obsługę innych klawiszy
     }
 }
+void Engine::MouseMotion(int x, int y) {
+    static int lastX = -1, lastY = -1;
+    static float angleX = 0.0f, angleY = 0.0f;
 
+    if (lastX != -1 && lastY != -1) {
+        // Oblicz różnicę pozycji myszy
+        int deltaX = x - lastX;
+        int deltaY = y - lastY;
+
+        // Ustaw kąty obrotu w zależności od ruchu myszy
+        angleY += deltaX * 0.2f;
+        angleX += deltaY * 0.2f;
+
+        // Obróć scenę
+        glLoadIdentity();
+        glRotatef(angleX, 0.1f, 0.0f, 0.01f);
+        glRotatef(angleY, 0.01f, 0.1f, 0.01f);
+    }
+
+    lastX = x;
+    lastY = y;
+}
 void Engine::handleMouse(int button, int state, int x, int y) {
     // Obsługa myszy (kliknięcia)
 }
@@ -185,15 +207,27 @@ void Engine::setupGL() {
 
     glutKeyboardFunc(handleKeyboard);
     glutMouseFunc(handleMouse);
-    glutMotionFunc(handleMouseMotion);
-    glutPassiveMotionFunc(handleMouseMotion);
+    glutMotionFunc(MouseMotion);
+    glutPassiveMotionFunc(MouseMotion);
     glutIdleFunc(update);
     glutDisplayFunc(render);
+
+    // Ustawienie perspektywy
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0f, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 100.0f);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // Ustawienie pozycji kamery
+    gluLookAt(5.0f, 2.0f, 5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 10.0f, 0.0f);
 }
+
 
 int main(int argc, char** argv) {
     Engine engine(argc, argv);
     engine.initialize(800, 600, false);
+
     engine.run();
     return 0;
 }

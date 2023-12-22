@@ -1,5 +1,8 @@
 ﻿#include<gl\glut.h>
 #include <GL/freeglut.h>
+#include <iostream>
+
+
 
 class Renderer {
 public:
@@ -21,54 +24,83 @@ void Renderer::drawTriangle() {
     glEnd();
 }
 
+float cubeVertices[][3] = {
+    {-0.5, -0.5, 0.5},
+    {0.5, -0.5, 0.5},
+    {0.5, 0.5, 0.5},
+    {-0.5, 0.5, 0.5},
+    {-0.5, -0.5, -0.5},
+    {0.5, -0.5, -0.5},
+    {0.5, 0.5, -0.5},
+    {-0.5, 0.5, -0.5}
+};
+
+GLfloat Move = 0.0f;
+GLfloat trX = 0.0f;
+GLfloat trY = 0.0f;
+GLfloat trZ = 0.0f;
+
+
 void Renderer::drawCube() {
+    glTranslatef(trX,trY,trZ);
     // Rysuj prostopadłościan o bokach równych 1 w punkcie (0, 0, 0)
     glBegin(GL_QUADS);
 
+
     // Przód
     glColor3f(1.0f, 0.0f, 0.0f); // Czerwony
-    glVertex3f(-0.5f, -0.5f, 0.5f);
-    glVertex3f(0.5f, -0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, 0.5f);
-    glVertex3f(-0.5f, 0.5f, 0.5f);
+    glVertex3f(-0.5f+Move, -0.5f + Move, 0.5f + Move);
+    glVertex3f(0.5f + Move, -0.5f + Move, 0.5f + Move);
+    glVertex3f(0.5f + Move, 0.5f + Move, 0.5f + Move);
+    glVertex3f(-0.5f + Move, 0.5f + Move, 0.5f + Move);
 
     // Tył
-    glColor3f(0.0f, 1.0f, 0.0f); // Zielony
-    glVertex3f(-0.5f, -0.5f, -0.5f);
-    glVertex3f(0.5f, -0.5f, -0.5f);
-    glVertex3f(0.5f, 0.5f, -0.5f);
-    glVertex3f(-0.5f, 0.5f, -0.5f);
+    glColor3f(0.0f , 1.0f, 0.0f ); // Zielony
+    glVertex3f(-0.5f + Move, -0.5f + Move, -0.5f + Move);
+    glVertex3f(0.5f + Move, -0.5f + Move, -0.5f + Move);
+    glVertex3f(0.5f + Move, 0.5f + Move, -0.5f + Move);
+    glVertex3f(-0.5f + Move, 0.5f + Move, -0.5f + Move);
 
     // Lewo
-    glColor3f(0.0f, 0.0f, 1.0f); // Niebieski
-    glVertex3f(-0.5f, -0.5f, 0.5f);
-    glVertex3f(-0.5f, 0.5f, 0.5f);
-    glVertex3f(-0.5f, 0.5f, -0.5f);
-    glVertex3f(-0.5f, -0.5f, -0.5f);
+    glColor3f(0.0f , 0.0f , 1.0f ); // Niebieski
+    glVertex3f(-0.5f + Move, -0.5f + Move, 0.5f + Move);
+    glVertex3f(-0.5f + Move, 0.5f + Move, 0.5f + Move);
+    glVertex3f(-0.5f + Move, 0.5f + Move, -0.5f + Move);
+    glVertex3f(-0.5f + Move, -0.5f + Move, -0.5f + Move);
 
     // Prawo
-    glColor3f(1.0f, 1.0f, 0.0f); // Żółty
-    glVertex3f(0.5f, -0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, -0.5f);
-    glVertex3f(0.5f, -0.5f, -0.5f);
+    glColor3f(1.0f , 1.0f , 0.0f ); // Żółty
+    glVertex3f(0.5f + Move, -0.5f + Move, 0.5f + Move);
+    glVertex3f(0.5f + Move, 0.5f + Move, 0.5f + Move);
+    glVertex3f(0.5f + Move, 0.5f + Move, -0.5f + Move);
+    glVertex3f(0.5f + Move, -0.5f + Move, -0.5f + Move);
 
     // Góra
-    glColor3f(1.0f, 0.0f, 1.0f); // Magenta
-    glVertex3f(-0.5f, 0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, -0.5f);
-    glVertex3f(-0.5f, 0.5f, -0.5f);
+    glColor3f(1.0f , 0.0f , 1.0f ); // Magenta
+    glVertex3f(-0.5f + Move, 0.5f + Move, 0.5f + Move);
+    glVertex3f(0.5f + Move, 0.5f + Move, 0.5f + Move);
+    glVertex3f(0.5f + Move, 0.5f + Move, -0.5f + Move);
+    glVertex3f(-0.5f + Move, 0.5f + Move, -0.5f + Move);
 
     // Dół
-    glColor3f(0.0f, 1.0f, 1.0f); // Cyan
-    glVertex3f(-0.5f, -0.5f, 0.5f);
-    glVertex3f(0.5f, -0.5f, 0.5f);
-    glVertex3f(0.5f, -0.5f, -0.5f);
-    glVertex3f(-0.5f, -0.5f, -0.5f);
+    glColor3f(0.0f , 1.0f , 1.0f ); // Cyan
+    glVertex3f(-0.5f + Move, -0.5f + Move, 0.5f + Move);
+    glVertex3f(0.5f + Move, -0.5f + Move, 0.5f + Move);
+    glVertex3f(0.5f + Move, -0.5f + Move, -0.5f + Move);
+    glVertex3f(-0.5f + Move, -0.5f + Move, -0.5f + Move);
 
     glEnd();
 }
+
+float cameraX = 5.0f;
+float cameraY = 2.0f;
+float cameraZ = 5.0f;
+float lookAtX = 0.0f;
+float lookAtY = 0.0f;
+float lookAtZ = 0.0f;
+float upX = 0.0f;
+float upY = 1.0f;
+float upZ = 0.0f;
 
 class Engine {
 
@@ -78,10 +110,10 @@ public:
 
     void initialize(int width, int height, bool fullscreen);
     void run();
-   static void handleKeyboard(unsigned char key, int x, int y);
+    static void handleKeyboard(unsigned char key, int x, int y);
    static void handleMouse(int button, int state, int x, int y);
-   static void MouseMotion(int x, int y);
-   static void handleMouseMotion(int x, int y);
+
+   
    static void update();
     static void render();
     static void cleanup();
@@ -93,10 +125,11 @@ private:
     static Renderer renderer;
     static void renderObjects();
 
+
     // Dodaj inne parametry i zmienne, takie jak czasomierz, buforowanie, itp.
 
     void setupGL();
-    void setViewport();
+    //void setViewport();
     // Dodaj inne funkcje pomocnicze związane z OpenGL i FreeGLUT
 };
 
@@ -143,37 +176,38 @@ void Engine::handleKeyboard(unsigned char key, int x, int y) {
         exit(0);
         break;
         // Dodaj obsługę innych klawiszy
+    case 'a':
+        std::cout << "a" << std::endl;
+        trX += 0.1f;
+       // Move += 1.1f;
+        //cameraX = +0.1f;
+        //upX = +0.1f;
+        ////upY =+0.1f;
+        //upZ = +0.1f;
+        break;
+    case 'd':
+        std::cout << "b" << std::endl;
+        trX -= 0.1f;
+       // Move -= 1.1f;
+        /*cameraX = -0.1f;
+        upX = -0.1f;
+        upY = -0.1f;
+        upZ = -0.1f;*/
+        break;
+    case 's':
+        std::cout << "s" << std::endl;
+        trZ -= 0.1f;
+        break;
     }
+    //glLoadIdentity();
+    //gluLookAt(cameraX, cameraY, cameraZ, lookAtX, lookAtY, lookAtZ, upX, upY, upZ);
+    glutPostRedisplay();
 }
-void Engine::MouseMotion(int x, int y) {
-    static int lastX = -1, lastY = -1;
-    static float angleX = 0.0f, angleY = 0.0f;
 
-    if (lastX != -1 && lastY != -1) {
-        // Oblicz różnicę pozycji myszy
-        int deltaX = x - lastX;
-        int deltaY = y - lastY;
-
-        // Ustaw kąty obrotu w zależności od ruchu myszy
-        angleY += deltaX * 0.2f;
-        angleX += deltaY * 0.2f;
-
-        // Obróć scenę
-        glLoadIdentity();
-        glRotatef(angleX, 0.1f, 0.0f, 0.01f);
-        glRotatef(angleY, 0.01f, 0.1f, 0.01f);
-    }
-
-    lastX = x;
-    lastY = y;
-}
 void Engine::handleMouse(int button, int state, int x, int y) {
     // Obsługa myszy (kliknięcia)
 }
 
-void Engine::handleMouseMotion(int x, int y) {
-    // Obsługa ruchu myszy
-}
 
 void Engine::update() {
     // Aktualizacja logiki gry
@@ -207,11 +241,10 @@ void Engine::setupGL() {
 
     glutKeyboardFunc(handleKeyboard);
     glutMouseFunc(handleMouse);
-    glutMotionFunc(MouseMotion);
-    glutPassiveMotionFunc(MouseMotion);
+
     glutIdleFunc(update);
     glutDisplayFunc(render);
-
+   
     // Ustawienie perspektywy
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -220,7 +253,7 @@ void Engine::setupGL() {
     glLoadIdentity();
 
     // Ustawienie pozycji kamery
-    gluLookAt(5.0f, 2.0f, 5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 10.0f, 0.0f);
+    gluLookAt(cameraX, cameraY, cameraZ, lookAtX, lookAtY, lookAtZ, upX, upY, upZ);
 }
 
 

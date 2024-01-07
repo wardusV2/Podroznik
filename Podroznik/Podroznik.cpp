@@ -1,233 +1,167 @@
-﻿#include<gl\glut.h>
-#include <GL/freeglut.h>
-
-class Renderer {
-public:
-    static void drawTriangle();
-    static void drawCube();
-    // Dodaj inne funkcje do rysowania innych obiektów 3D
-};
-
-void Renderer::drawTriangle() {
-    glBegin(GL_TRIANGLES);
-    glColor3f(1.0f, 0.0f, 0.0f); // Czerwony
-    glVertex3f(0.0f, 1.0f, 0.0f);
-
-    glColor3f(0.0f, 1.0f, 0.0f); // Zielony
-    glVertex3f(-1.0f, -1.0f, 0.0f);
-
-    glColor3f(0.0f, 0.0f, 1.0f); // Niebieski
-    glVertex3f(1.0f, -1.0f, 0.0f);
-    glEnd();
-}
-
-void Renderer::drawCube() {
-    // Rysuj prostopadłościan o bokach równych 1 w punkcie (0, 0, 0)
-    glBegin(GL_QUADS);
-
-    // Przód
-    glColor3f(1.0f, 0.0f, 0.0f); // Czerwony
-    glVertex3f(-0.5f, -0.5f, 0.5f);
-    glVertex3f(0.5f, -0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, 0.5f);
-    glVertex3f(-0.5f, 0.5f, 0.5f);
-
-    // Tył
-    glColor3f(0.0f, 1.0f, 0.0f); // Zielony
-    glVertex3f(-0.5f, -0.5f, -0.5f);
-    glVertex3f(0.5f, -0.5f, -0.5f);
-    glVertex3f(0.5f, 0.5f, -0.5f);
-    glVertex3f(-0.5f, 0.5f, -0.5f);
-
-    // Lewo
-    glColor3f(0.0f, 0.0f, 1.0f); // Niebieski
-    glVertex3f(-0.5f, -0.5f, 0.5f);
-    glVertex3f(-0.5f, 0.5f, 0.5f);
-    glVertex3f(-0.5f, 0.5f, -0.5f);
-    glVertex3f(-0.5f, -0.5f, -0.5f);
-
-    // Prawo
-    glColor3f(1.0f, 1.0f, 0.0f); // Żółty
-    glVertex3f(0.5f, -0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, -0.5f);
-    glVertex3f(0.5f, -0.5f, -0.5f);
-
-    // Góra
-    glColor3f(1.0f, 0.0f, 1.0f); // Magenta
-    glVertex3f(-0.5f, 0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, -0.5f);
-    glVertex3f(-0.5f, 0.5f, -0.5f);
-
-    // Dół
-    glColor3f(0.0f, 1.0f, 1.0f); // Cyan
-    glVertex3f(-0.5f, -0.5f, 0.5f);
-    glVertex3f(0.5f, -0.5f, 0.5f);
-    glVertex3f(0.5f, -0.5f, -0.5f);
-    glVertex3f(-0.5f, -0.5f, -0.5f);
-
-    glEnd();
-}
+﻿#include <GL/freeglut.h>
+#include <cmath>
 
 class Engine {
+private:
+    float angle = 0.0f;
+    float cameraAngleX = 0.0f;
+    float cameraAngleY = 0.0f;
+    float cameraDistance = 5.0f;
 
 public:
-    Engine(int argc, char** argv);
-    ~Engine();
+    Engine() : angle(0.0f), cameraAngleX(0.0f), cameraAngleY(0.0f), cameraDistance(5.0f) {}
+    void drawCube() {
+        glPushMatrix();  // Push the current matrix onto the stack
 
-    void initialize(int width, int height, bool fullscreen);
-    void run();
-   static void handleKeyboard(unsigned char key, int x, int y);
-   static void handleMouse(int button, int state, int x, int y);
-   static void MouseMotion(int x, int y);
-   static void handleMouseMotion(int x, int y);
-   static void update();
-    static void render();
-    static void cleanup();
-
-private:
-    int windowWidth;
-    int windowHeight;
-    bool isFullscreen;
-    static Renderer renderer;
-    static void renderObjects();
-
-    // Dodaj inne parametry i zmienne, takie jak czasomierz, buforowanie, itp.
-
-    void setupGL();
-    void setViewport();
-    // Dodaj inne funkcje pomocnicze związane z OpenGL i FreeGLUT
-};
-
-Renderer Engine::renderer;
-
-void Engine::renderObjects() {
-    // Tutaj można umieścić kod do renderowania różnych obiektów 3D
-    // Na przykład:
-    //Renderer::drawTriangle();
-     Renderer::drawCube();
-
-}
+        // Przekształcenia geometryczne
+        //glTranslatef(0.0f, 0.0f, -5.0f);  // translation 
+        //glRotatef(angle, 1.0f, 1.0f, 1.0f);  // rotation
+        glScalef(0.5f, 0.5f, 0.5f);  // scaling
 
 
-Engine::Engine(int argc, char** argv) {
-    glutInit(&argc, argv);
-    windowWidth = 800;
-    windowHeight = 600;
-    isFullscreen = false;
-    // Zainicjuj inne zmienne i parametry
-}
+        glBegin(GL_QUADS);
 
-Engine::~Engine() {
-    cleanup();
-}
+        // Front face
+        glColor3f(1.0f, 0.0f, 0.0f);  // Red
+        glVertex3f(-1.0f, -1.0f, 1.0f);
+        glVertex3f(1.0f, -1.0f, 1.0f);
+        glVertex3f(1.0f, 1.0f, 1.0f);
+        glVertex3f(-1.0f, 1.0f, 1.0f);
 
-void Engine::initialize(int width, int height, bool fullscreen) {
-    windowWidth = width;
-    windowHeight = height;
-    isFullscreen = fullscreen;
-    // Inicjalizuj OpenGL i FreeGLUT
-    setupGL();
-}
+        // Back face
+        glColor3f(0.0f, 1.0f, 0.0f);  // Green
+        glVertex3f(-1.0f, -1.0f, -1.0f);
+        glVertex3f(1.0f, -1.0f, -1.0f);
+        glVertex3f(1.0f, 1.0f, -1.0f);
+        glVertex3f(-1.0f, 1.0f, -1.0f);
 
-void Engine::run() {
-    glutMainLoop();
-}
+        // Right face
+        glColor3f(0.0f, 0.0f, 1.0f);  // Blue
+        glVertex3f(1.0f, -1.0f, 1.0f);
+        glVertex3f(1.0f, -1.0f, -1.0f);
+        glVertex3f(1.0f, 1.0f, -1.0f);
+        glVertex3f(1.0f, 1.0f, 1.0f);
 
-void Engine::handleKeyboard(unsigned char key, int x, int y) {
-    // Obsługa klawiatury
-    switch (key) {
-    case 27: // ESC
-        cleanup();
-        exit(0);
-        break;
-        // Dodaj obsługę innych klawiszy
+        // Left face
+        glColor3f(1.0f, 1.0f, 0.0f);  // Yellow
+        glVertex3f(-1.0f, -1.0f, 1.0f);
+        glVertex3f(-1.0f, -1.0f, -1.0f);
+        glVertex3f(-1.0f, 1.0f, -1.0f);
+        glVertex3f(-1.0f, 1.0f, 1.0f);
+
+        // Top face
+        glColor3f(0.0f, 1.0f, 1.0f);  // Cyan
+        glVertex3f(-1.0f, 1.0f, 1.0f);
+        glVertex3f(1.0f, 1.0f, 1.0f);
+        glVertex3f(1.0f, 1.0f, -1.0f);
+        glVertex3f(-1.0f, 1.0f, -1.0f);
+
+        // Bottom face
+        glColor3f(1.0f, 0.0f, 1.0f);  // Magenta
+        glVertex3f(-1.0f, -1.0f, 1.0f);
+        glVertex3f(1.0f, -1.0f, 1.0f);
+        glVertex3f(1.0f, -1.0f, -1.0f);
+        glVertex3f(-1.0f, -1.0f, -1.0f);
+
+        glEnd();
+        glPopMatrix();
     }
-}
-void Engine::MouseMotion(int x, int y) {
-    static int lastX = -1, lastY = -1;
-    static float angleX = 0.0f, angleY = 0.0f;
+    static void renderSceneWrapper() {
+        Engine* engine = static_cast<Engine*>(glutGetWindowData());
+        engine->renderScene();
+    }
+    void renderScene() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (lastX != -1 && lastY != -1) {
-        // Oblicz różnicę pozycji myszy
-        int deltaX = x - lastX;
-        int deltaY = y - lastY;
-
-        // Ustaw kąty obrotu w zależności od ruchu myszy
-        angleY += deltaX * 0.2f;
-        angleX += deltaY * 0.2f;
-
-        // Obróć scenę
         glLoadIdentity();
-        glRotatef(angleX, 0.1f, 0.0f, 0.01f);
-        glRotatef(angleY, 0.01f, 0.1f, 0.01f);
+
+        // Ustawienie pozycji kamery
+        gluLookAt(cameraDistance * sin(cameraAngleY) * cos(cameraAngleX),
+            cameraDistance * sin(cameraAngleX),
+            cameraDistance * cos(cameraAngleY) * cos(cameraAngleX),
+            0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f);
+
+        glRotatef(angle, 1.0f, 1.0f, 1.0f);
+
+        drawCube();
+
+        glutSwapBuffers();
     }
 
-    lastX = x;
-    lastY = y;
-}
-void Engine::handleMouse(int button, int state, int x, int y) {
-    // Obsługa myszy (kliknięcia)
-}
-
-void Engine::handleMouseMotion(int x, int y) {
-    // Obsługa ruchu myszy
-}
-
-void Engine::update() {
-    // Aktualizacja logiki gry
-}
-
-void Engine::render() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // Renderowanie sceny
-    renderObjects();
-    glutSwapBuffers();
-}
-
-void Engine::cleanup() {
-    // Deinicjalizacja OpenGL i FreeGLUT, sprzątanie pamięci, itp.
-}
-
-void Engine::setupGL() {
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    glutCreateWindow("OpenGL Engine");
-
-    if (isFullscreen) {
-        glutFullScreen();
-    }
-    else {
-        glutInitWindowSize(windowWidth, windowHeight);
-        glutPositionWindow(100, 100);
+    static void updateWrapper(int value) {
+        Engine* engine = static_cast<Engine*>(glutGetWindowData());
+        engine->update(value);
     }
 
-    glEnable(GL_DEPTH_TEST);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    void update(int value) {
+        glutPostRedisplay();
+        glutTimerFunc(16, updateWrapper, 0);
+    }
 
-    glutKeyboardFunc(handleKeyboard);
-    glutMouseFunc(handleMouse);
-    glutMotionFunc(MouseMotion);
-    glutPassiveMotionFunc(MouseMotion);
-    glutIdleFunc(update);
-    glutDisplayFunc(render);
+    static void handleKeypressWrapper(unsigned char key, int x, int y) {
+        Engine* engine = static_cast<Engine*>(glutGetWindowData());
+        engine->handleKeypress(key, x, y);
+    }
 
-    // Ustawienie perspektywy
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0f, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 100.0f);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    void handleKeypress(unsigned char key, int x, int y) {
+        switch (key) {
+        case 'w':
+            cameraAngleX += 0.1f;
+            break;
+        case 's':
+            cameraAngleX -= 0.1f;
+            break;
+        case 'a':
+            cameraAngleY -= 0.1f;
+            break;
+        case 'd':
+            cameraAngleY += 0.1f;
+            break;
+        case 'z':
+            cameraDistance -= 0.1f;
+            break;
+        case 'x':
+            cameraDistance += 0.1f;
+            break;
+        }
+        glutPostRedisplay();
+    }
+    void init() {
+        glEnable(GL_DEPTH_TEST);
+    }
+    static void reshapeWrapper(int width, int height) {
+        Engine* engine = static_cast<Engine*>(glutGetWindowData());
+        engine->reshape(width, height);
+    }
+    void reshape(int width, int height) {
+        glViewport(0, 0, width, height);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 1.0f, 100.0f);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+    }
+    void run(int argc, char** argv) {
+        glutInit(&argc, argv);
+        glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+        glutInitWindowSize(800, 600);
 
-    // Ustawienie pozycji kamery
-    gluLookAt(5.0f, 2.0f, 5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 10.0f, 0.0f);
-}
+        glutCreateWindow("OpenGL 3D Cube Example");
+        glutSetWindowData(this);
 
+        init();
 
+        glutDisplayFunc(renderSceneWrapper);
+        glutReshapeFunc(reshapeWrapper);
+        glutTimerFunc(25, updateWrapper, 0);
+        glutKeyboardFunc(handleKeypressWrapper);
+
+        glutMainLoop();
+    }
+};
 int main(int argc, char** argv) {
-    Engine engine(argc, argv);
-    engine.initialize(800, 600, false);
-
-    engine.run();
+    Engine engine;
+    engine.run(argc, argv);
     return 0;
 }
